@@ -162,7 +162,7 @@ export async function requestOpenai(req: NextRequest, accessCode:string) {
     );
   }
 
-  console.log(model + ' ' + accessCode + ' ' + num);
+  // console.log(model + ' ' + accessCode + ' ' + num);
 
   const test_get = apiUrl + "get_remain_subs";
   // const test_post = apiUrl + "update_subs"

@@ -225,6 +225,7 @@ export class ChatGPTApi implements LLMApi {
               return finish();
             }
             const text = msg.data;
+            // console.log(text);
             try {
               const json = JSON.parse(text) as {
                 choices: Array<{
@@ -243,7 +244,7 @@ export class ChatGPTApi implements LLMApi {
           },
           onclose() {
             finish();
-            console.log(i);
+            console.log(`输出字数: ${i-3}`);
             let a = getHeaders();
             const b = a["Authorization"];
             const token = b
@@ -251,7 +252,7 @@ export class ChatGPTApi implements LLMApi {
               .replaceAll("Bearer ", "")
               .trim()
               .slice(ACCESS_CODE_PREFIX.length);
-            updateSubsValue(token, i, modelConfig.model);
+            updateSubsValue(token, i-3, modelConfig.model);
 
           },
           onerror(e) {

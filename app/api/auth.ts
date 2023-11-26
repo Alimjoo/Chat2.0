@@ -24,7 +24,7 @@ function parseApiKey(bearToken: string) {
   };
 }
 
-export function auth(req: NextRequest, accessCode1:string) {
+export function auth(req: NextRequest) {
 
 
   const authToken = req.headers.get("Authorization") ?? "";

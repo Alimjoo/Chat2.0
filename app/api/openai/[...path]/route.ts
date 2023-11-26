@@ -57,7 +57,7 @@ async function handle(
   const authToken = req.headers.get("Authorization") ?? "";
   const { accessCode, apiKey: token } = parseApiKey(authToken);
 
-  const authResult = auth(req, accessCode);
+  const authResult = auth(req);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
