@@ -244,16 +244,17 @@ export class ChatGPTApi implements LLMApi {
           },
           onclose() {
             finish();
-            console.log(`输出字数: ${i-3}`);
-            let a = getHeaders();
-            const b = a["Authorization"];
-            const token = b
-              .trim()
-              .replaceAll("Bearer ", "")
-              .trim()
-              .slice(ACCESS_CODE_PREFIX.length);
-            updateSubsValue(token, i-3, modelConfig.model);
-
+            if (i > 0){
+              console.log(`输出字数: ${i-3}`);
+              let a = getHeaders();
+              const b = a["Authorization"];
+              const token = b
+                .trim()
+                .replaceAll("Bearer ", "")
+                .trim()
+                .slice(ACCESS_CODE_PREFIX.length);
+              updateSubsValue(token, i-3, modelConfig.model);
+            }
           },
           onerror(e) {
             options.onError?.(e);
