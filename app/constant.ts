@@ -15,9 +15,9 @@ export const MY_DEFAULT_NAME = "alim_joo"
 
 import { NextRequest } from "next/server";
 
-// export const apiUrl = "http://localhost:300/";
+// export const apiUrl = "http://localhost:299/"; 
 
-export const apiUrl = "http://chat.piyazon.top:300/";
+export const apiUrl = "https://chat.piyazon.top:300/";
 
 
 

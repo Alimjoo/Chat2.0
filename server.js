@@ -77,7 +77,7 @@ app.get('/get_remain_subs/:name', (req, res) => {
 
 
 // const PORT = process.env.PORT || 300;
-const PORT = 300;
+const PORT = 299;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
