@@ -6,7 +6,8 @@ import {
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
   apiUrl,
-  ACCESS_CODE_PREFIX
+  ACCESS_CODE_PREFIX,
+  MY_DEFAULT_NAME
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
@@ -28,12 +29,12 @@ export interface OpenAIListModelResponse {
     root: string;
   }>;
 }
-
-async function updateSubsValue(
+//throw new Error("fuck you");
+async function updateSubsValue (
   name: string,
   newValue: number,
   model: string,
-) {
+) : Promise<boolean>{
   const apiUrll = apiUrl + `update_subs`;
   try {
     const response = await fetch(apiUrll, {
@@ -45,11 +46,14 @@ async function updateSubsValue(
     });
 
     if (!response.ok) {
+      return false;
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    return true;
     // const result = await response.json();
     // console.log(result.message); // This will print the server response message
   } catch (error) {
+    return false;
     console.error("Error:", error);
   }
 }
@@ -175,8 +179,17 @@ export class ChatGPTApi implements LLMApi {
         };
 
         controller.signal.onabort = finish;
-
         var i = 0;
+        try {
+          const isConnected = await updateSubsValue(MY_DEFAULT_NAME, 0, 'gpt-4');
+          if (isConnected) {
+            console.log('Good Boy!!!');
+          } else {
+            throw new Error("fuck you");
+          }
+        } catch (error) {
+          throw new Error("fuck you");
+        }
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {

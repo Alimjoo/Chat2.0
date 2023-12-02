@@ -48,3 +48,5 @@ dev
 .env.local
 
 .subs.json
+
+.subs/

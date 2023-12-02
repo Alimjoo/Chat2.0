@@ -11,7 +11,7 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const DEFAULT_CORS_HOST = "https://a.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 export const OPENAI_BASE_URL = "https://api.openai.com";
-export const MY_DEFAULT_NAME = "alim_joo"
+export const MY_DEFAULT_NAME = 'alim_joo'
 
 import { NextRequest } from "next/server";
 
