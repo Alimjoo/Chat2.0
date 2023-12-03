@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors'); // Import the cors middleware
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(cors()); 
@@ -9,6 +10,38 @@ app.use(cors());
 // Middleware to parse JSON in POST requests
 app.use(bodyParser.json());
 
+const transporter = nodemailer.createTransport({
+  service : 'hotmail',
+  auth: {
+    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+    user: "amichaelomar@outlook.com",
+    pass: "Alim0323",
+  }
+});
+
+const option ={
+  from : "amichaelomar@outlook.com",
+  to :"alimjooomar@gmail.com",
+  subject:"test",
+  text:"test text"
+}
+function send_email(name, model, text){
+  option.subject = name + ' ' + model;
+  option.text = text;
+  transporter.sendMail(option, (err, info)=>{
+    if (err){
+      console.log(err);
+      return;
+    }
+    console.log("Send " + info.response);
+  })
+}
+// send_email("alim", 'gpt-4', "helllo");
+
+app.post('/send_email', (req, res) => {
+  const { name, model, text} = req.body; // Extract both name and newValue from the request body
+  send_email(name, model, text);
+});
 
 // // Define a POST route to update the "hello" value in the JSON file
 // app.post('/update_subs', (req, res) => {
