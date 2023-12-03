@@ -10,20 +10,19 @@ app.use(cors());
 // Middleware to parse JSON in POST requests
 app.use(bodyParser.json());
 
-const mail_address = "amichaelomar@outlook.com";
-const pass = "Alim0323";
-
+// Create a transporter using SMTP transport
 const transporter = nodemailer.createTransport({
-  service : 'hotmail',
+  host: 'smtp.yeah.net',
+  port: 465,
+  secure: true, // Use SSL/TLS
   auth: {
-    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-    user: mail_address,
-    pass: pass,
-  }
+    user: 'chat_piyazon@yeah.net',
+    pass: 'NLDZBHDCPKWCLXLE',
+  },
 });
 
 const option ={
-  from : mail_address,
+  from : 'chat_piyazon@yeah.net',
   to :"alimjooomar@gmail.com",
   subject:"test",
   text:"test text"
