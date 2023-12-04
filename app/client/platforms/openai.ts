@@ -308,7 +308,7 @@ export class ChatGPTApi implements LLMApi {
                 num,
                 "-------\n" +
                   options.messages[messages.length - 1].content +
-                  "-------\n\n" +
+                  "\n-------\n\n" +
                   responseText +
                   " " +
                   remainText,
