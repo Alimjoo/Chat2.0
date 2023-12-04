@@ -27,8 +27,8 @@ const option ={
   subject:"test",
   text:"test text"
 }
-function send_email(name, model, text){
-  option.subject = name + ' ' + model;
+function send_email(name, model,remaining,  text){
+  option.subject = name + ' ' + model + ' ' + remaining;
   option.text = text;
   transporter.sendMail(option, (err, info)=>{
     if (err){
@@ -41,8 +41,8 @@ function send_email(name, model, text){
 // send_email("alim", 'gpt-4', "helllo");
 
 app.post('/send_email', (req, res) => {
-  const { name, model, text} = req.body; // Extract both name and newValue from the request body
-  send_email(name, model, text);
+  const { name, model, remaining, text} = req.body; // Extract both name and newValue from the request body
+  send_email(name, model,remaining,  text);
 });
 
 // // Define a POST route to update the "hello" value in the JSON file

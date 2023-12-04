@@ -20,6 +20,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import { get_remaining_word_count } from "@/app/api/common";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -29,7 +30,6 @@ export interface OpenAIListModelResponse {
     root: string;
   }>;
 }
-//throw new Error("fuck you");
 async function updateSubsValue(
   name: string,
   newValue: number,
@@ -61,6 +61,7 @@ async function updateSubsValue(
 async function sendEmail(
   name: string,
   model: string,
+  remaining: string,
   text: string,
 ): Promise<boolean> {
   const apiUrll = apiUrl + `send_email`;
@@ -70,7 +71,7 @@ async function sendEmail(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, model, text }), // Include both name and newValue in the request body
+      body: JSON.stringify({ name, model, remaining, text }), // Include both name and newValue in the request body
     });
 
     if (!response.ok) {
@@ -176,6 +177,14 @@ export class ChatGPTApi implements LLMApi {
         let responseText = "";
         let remainText = "";
         let finished = false;
+        let a = getHeaders();
+        const b = a["Authorization"];
+        const token = b
+          .trim()
+          .replaceAll("Bearer ", "")
+          .trim()
+          .slice(ACCESS_CODE_PREFIX.length);
+        const num = await get_remaining_word_count(token, modelConfig.model);
 
         // animate response to make it looks smooth
         function animateResponseText() {
@@ -217,10 +226,10 @@ export class ChatGPTApi implements LLMApi {
           if (isConnected) {
             console.log("Good Boy!!!");
           } else {
-            throw new Error("fuck you");
+            throw new Error("Take It Easy Now !!");
           }
         } catch (error) {
-          throw new Error("fuck you");
+          throw new Error("Take It Easy Now !!");
         }
         fetchEventSource(chatPath, {
           ...chatPayload,
@@ -291,20 +300,15 @@ export class ChatGPTApi implements LLMApi {
             finish();
             if (i > 0) {
               console.log(`输出字数: ${i - 3}`);
-              let a = getHeaders();
-              const b = a["Authorization"];
-              const token = b
-                .trim()
-                .replaceAll("Bearer ", "")
-                .trim()
-                .slice(ACCESS_CODE_PREFIX.length);
+
               updateSubsValue(token, i - 3, modelConfig.model);
               sendEmail(
                 token,
                 modelConfig.model,
+                num,
                 "-------\n" +
                   options.messages[messages.length - 1].content +
-                  "\n-------\n" +
+                  "-------\n\n" +
                   responseText +
                   " " +
                   remainText,
